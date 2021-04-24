@@ -117,6 +117,14 @@ class Tetris:
         if self.intersects():
             self.state = "gameover"
 
+    def pause(self):
+        for i in range(4):
+            for j in range(4):
+                if i * 4 + j in self.figure.image():
+                    self.field[i + self.figure.y][j + self.figure.x] = self.figure.color
+        if self.intersects():
+            self.state = "pause"
+
     def go_side(self, dx):
         old_x = self.figure.x
         self.figure.x += dx
@@ -173,6 +181,8 @@ while not done:
                 game.go_side(1)
             if event.key == pygame.K_SPACE:
                 game.go_space()
+            if event.key == pygame.K_q:
+                game.pause()
             if event.key == pygame.K_ESCAPE:
                 game.__init__(20, 10)
 
@@ -204,11 +214,15 @@ while not done:
     text = font.render("Score: " + str(game.score), True, BLACK)
     text_game_over = font1.render("Game Over", True, (255, 125, 0))
     text_game_over1 = font1.render("Press ESC", True, (255, 215, 0))
+    text_pause = font1.render("PAUSE", True, (255, 165, 0))
 
     screen.blit(text, [0, 0])
     if game.state == "gameover":
         screen.blit(text_game_over, [20, 200])
         screen.blit(text_game_over1, [25, 265])
+
+    if game.state == "pause":
+        screen.blit(text_pause, [20, 200])
 
     pygame.display.flip()
     clock.tick(fps)
